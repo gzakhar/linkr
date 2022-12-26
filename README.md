@@ -1,0 +1,1 @@
+## Template react solana web3 project.
