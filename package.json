@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "dependencies": {
     "@babel/runtime": "^7.15.5",
+    "@craco/craco": "^6.4.5",
     "@civic/solana-gateway-react": "^0.10.0",
     "@identity.com/solana-gateway-ts": "^0.10.0",
     "@mui/icons-material": "^5.10.9",
