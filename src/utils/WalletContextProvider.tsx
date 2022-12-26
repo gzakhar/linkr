@@ -1,7 +1,7 @@
 import { FC, ReactNode, useMemo } from "react";
 import {
-    ConnectionProvider,
-    WalletProvider,
+  ConnectionProvider,
+  WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { clusterApiUrl } from "@solana/web3.js";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
@@ -9,35 +9,39 @@ import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { SlopeWalletAdapter } from "@solana/wallet-adapter-slope";
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import {
-    SolletWalletAdapter,
-    SolletExtensionWalletAdapter,
+  SolletWalletAdapter,
+  SolletExtensionWalletAdapter,
 } from "@solana/wallet-adapter-sollet";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { WalletDialogProvider } from "@solana/wallet-adapter-material-ui";
+
 require("@solana/wallet-adapter-react-ui/styles.css");
 
 const network = (process.env.REACT_APP_SOLANA_NETWORK ??
-    "devnet") as WalletAdapterNetwork;
+  "devnet") as WalletAdapterNetwork;
 
 const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const endpoint = useMemo(() => clusterApiUrl(network), []);
+  const endpoint = useMemo(() => clusterApiUrl(network), []);
 
-    const wallets = useMemo(() => {
-        return [
-            new PhantomWalletAdapter(),
-            new SolflareWalletAdapter({ network }),
-            new SlopeWalletAdapter(),
-            new SolletWalletAdapter({ network }),
-            new SolletExtensionWalletAdapter({ network }),
-        ];
-    }, []);
+  const wallets = useMemo(() => {
+    return [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter({ network }),
+      new SlopeWalletAdapter(),
+      new SolletWalletAdapter({ network }),
+      new SolletExtensionWalletAdapter({ network }),
+    ];
+  }, []);
 
-    return (
-        <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets}>
-                <WalletModalProvider>{children}</WalletModalProvider>
-            </WalletProvider>
-        </ConnectionProvider>
-    );
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+          <WalletDialogProvider>{children}</WalletDialogProvider>
+        </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
+  );
 };
 
 export default WalletContextProvider;
