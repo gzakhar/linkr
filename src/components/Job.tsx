@@ -5,13 +5,14 @@ import * as web3 from "@solana/web3.js";
 import { Message } from "../models/Message";
 import { FaRunning } from 'react-icons/fa';
 import { IoMdMan } from 'react-icons/io';
+import { Store } from 'react-notifications-component'
 
 interface JobProps {
     jobName: string;
 }
 
-const _hashSimplified = (hash: string) => {
-    return `${hash.substring(0, 5)}...`
+const _hashSimplified = (hash: string, places: number = 5, dots: number = 3) => {
+    return `${hash.substring(0, places)}${'.'.repeat(dots)}`
 }
 
 const Job = ({ jobName }: JobProps) => {
@@ -60,12 +61,39 @@ const Job = ({ jobName }: JobProps) => {
 
         try {
             const txid = await sendTransaction(transaction, connection)
-            console.log(
-                `Transaction submitted: https://explorer.solana.com/tx/${txid}?cluster=devnet`
-            )
+            Store.addNotification({
+                title: "Transaction Sent",
+                message: <p>View on Explorer: <a
+                    style={{ textDecoration: "none" }}
+                    href={`https://explorer.solana.com/tx/${txid}?cluster=devnet`}
+                    rel="noreferrer"
+                    target="_blank">{_hashSimplified(txid, 15, 0)}
+                </a></p>,
+                type: "success",
+                insert: "top",
+                container: "bottom-left",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                    duration: 6000,
+                    onScreen: true,
+                    pauseOnHover: true
+                }
+            })
         } catch (e) {
-            console.log(JSON.stringify(e))
-            alert(JSON.stringify(e))
+            Store.addNotification({
+                title: "Transaction failed",
+                message: `Transaction failed with error: ${e}`,
+                type: "danger",
+                insert: "top",
+                container: "bottom-left",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                    duration: 6000,
+                    onScreen: true
+                }
+            })
         }
 
     }

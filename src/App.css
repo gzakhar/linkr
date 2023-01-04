@@ -4,12 +4,19 @@
 
 .navigation {
   display: flex;
-  justify-content: right;
+  justify-content: space-between;
   box-sizing: border-box;
   margin: 0;
   padding: 10px;
   text-align: center;
   background: var(--accented-main-color);
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 40px;
+  font-family: monospace;
+  color: var(--popup-color)
 }
 
 .container {
