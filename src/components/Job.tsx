@@ -1,30 +1,34 @@
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useState, useEffect } from "react";
-import Modal from './Modal';
+import Modal from './Modal'; // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as web3 from "@solana/web3.js";
 import { Message } from "../models/Message";
 import { FaRunning } from 'react-icons/fa';
 import { IoMdMan } from 'react-icons/io';
 import { Store } from 'react-notifications-component'
 
+
 interface JobProps {
+    jobId: number;
     jobName: string;
+    programId: string;
+    timeInterval: number;
+    url: string;
 }
 
 const _hashSimplified = (hash: string, places: number = 5, dots: number = 3) => {
     return `${hash.substring(0, places)}${'.'.repeat(dots)}`
 }
 
-const Job = ({ jobName }: JobProps) => {
+const Job = ({ jobId, jobName, programId, timeInterval, url }: JobProps) => {
+    const realJobId = jobId;
     const [realJobName, setJobName] = useState<string>(jobName);
-    const [programId, setProgramId] = useState<string>("")
-    // const programId = "9k8ZMZxY25oCCwiEbKoRk45H42ZLQyCziaC4pgEmMHMv";
-    const [timeInterval, setTimeInterval] = useState<number>(60);
+    const [realTimeInterval, setJobTimeInterval] = useState<number>(timeInterval);
+    const [realProgramId, setProgramId] = useState<string>(programId);
+    const [data, setData] = useState<string>(url);
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
     const [jobActive, setJobActive] = useState<boolean>(false);
     const [timesRun, setTimesRun] = useState<number>(0);
-    const [data, setData] = useState<string>("");
-    // const [showDetails, setShowDetails] = useState<boolean>(false);
 
     const { connection } = useConnection()
     const { publicKey, sendTransaction } = useWallet()
@@ -32,7 +36,7 @@ const Job = ({ jobName }: JobProps) => {
     useEffect(() => {
         const interval = setInterval(() => {
             if (jobActive) runJob();
-        }, timeInterval * 1000);
+        }, realTimeInterval * 1000);
         return () => clearInterval(interval);
     }, [jobActive, timesRun, realJobName])
 
@@ -103,7 +107,7 @@ const Job = ({ jobName }: JobProps) => {
             {jobActive ? <FaRunning size={30} /> : <IoMdMan size={30} />}
             <p>{realJobName}</p>
             <p>Job Runs: {timesRun}</p>
-            <p>ProgramId: {_hashSimplified(programId)}</p>
+            <p>ProgramId: {_hashSimplified(realProgramId)}</p>
             <button className="button" onClick={() => setJobActive(!jobActive)}>
                 {jobActive ? "Stop" : "Start"}
             </button>
@@ -114,17 +118,16 @@ const Job = ({ jobName }: JobProps) => {
             <Modal
                 modalIsOpen={modalIsOpen}
                 setModalIsOpen={setModalIsOpen}
+                jobId={realJobId}
                 setJobName={setJobName}
                 jobName={realJobName}
-                setJobTimeInterval={setTimeInterval}
+                setJobTimeInterval={setJobTimeInterval}
                 jobTimeInterval={timeInterval}
                 setJobProgramId={setProgramId}
                 jobProgramId={programId || "9k8ZMZxY25oCCwiEbKoRk45H42ZLQyCziaC4pgEmMHMv"}
-                setJobData={setData}
                 jobData={data}
-
+                setJobData={setData}
             />
-
         </li>
     );
 };

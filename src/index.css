@@ -1,9 +1,14 @@
 body {
-  --main-color: #F0CAA3;
+  /* --main-color: #F0CAA3;
   --accented-main-color: #3B185F;
   --text-color: #00005C;
   --popup-color: #C060A1;
-  --button-color: azure;
+  --button-color: azure; */
+  --main-color: #F1F6F5;
+  --accented-main-color: #3B185F;
+  --text-color: #F1F6F5;
+  --popup-color: #8abad1;
+  --button-color: #4B56D2;
   background: var(--main-color);
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

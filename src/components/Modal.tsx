@@ -1,9 +1,11 @@
 import { useState } from "react";
 import Modal from 'react-modal';
+import axios from 'axios';
 
 interface ModalProps {
     modalIsOpen: boolean;
     setModalIsOpen: (isOpen: boolean) => void;
+    jobId: number;
     setJobName: (name: string) => void;
     jobName: string;
     setJobTimeInterval: (timeInterval: number) => void;
@@ -17,6 +19,7 @@ interface ModalProps {
 const MyModal = ({
     modalIsOpen,
     setModalIsOpen,
+    jobId,
     setJobName,
     jobName,
     setJobTimeInterval,
@@ -27,18 +30,32 @@ const MyModal = ({
     jobData,
 }: ModalProps) => {
 
-    const [realJobName, setRealJobName] = useState<string>(jobName);
+    const [name, setName] = useState<string>(jobName);
     const [timeInterval, setTimeInterval] = useState<number>(jobTimeInterval);
     const [programId, setProgramId] = useState<string>(jobProgramId);
     const [data, setData] = useState<string>(jobData);
 
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setModalIsOpen(false)
-        setJobName(realJobName);
-        setJobTimeInterval(timeInterval);
-        setJobProgramId(programId);
-        setJobData(data);
+        const res = await axios.put(`/jobs/${jobId}`, {
+            jobName: name,
+            programId: programId,
+            timeInterval: timeInterval,
+            data: data
+        })
+
+        setJobName(res.data.jobname)
+        setJobProgramId(res.data.programid)
+        setJobTimeInterval(res.data.timeinterval)
+        setJobData(res.data.url|| " ")
+    }
+
+    const handleDelete = async () => {
+    
+        setModalIsOpen(false)
+        const res = await axios.delete(`/jobs/${jobId}`)
+        console.log(res.data)
     }
 
     return (
@@ -63,8 +80,8 @@ const MyModal = ({
                 <input
                     style={{ marginBottom: "10px" }}
                     type="text"
-                    value={realJobName}
-                    onChange={(e) => setRealJobName(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                 />
                 <hr style={{ width: "100%" }} />
                 <p style={{ margin: "2px 0px 4px 0px" }}>Solana program ID.</p>
@@ -95,6 +112,7 @@ const MyModal = ({
                 />
             </form>
             <div style={{ display: "flex", justifyContent: "right" }}>
+                <button className="danger-button" onClick={handleDelete}>Delete</button>
                 <button onClick={() => setModalIsOpen(false)}>Cancel</button>
                 <button onClick={handleSubmit}>Submit</button>
             </div>
