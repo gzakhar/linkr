@@ -1,7 +1,6 @@
 
 const paragraphs = {
     par1: "A web-based centralized Solana oracle management tool that allows for quick and easy testing of oracle data feeds. A web-based centralized Solana oracle management tool that allows for quick and easy testing of oracle data feeds.",
-    par2: "A web-based centralized Solana oracle management tool that allows for quick and easy testing of oracle data feeds.",
 }
 
 const Landing = () => {
